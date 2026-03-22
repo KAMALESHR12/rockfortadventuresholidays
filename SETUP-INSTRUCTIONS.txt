@@ -1,0 +1,76 @@
+====================================================
+ROCKFORT ADVENTURE HOLIDAYS — SETUP INSTRUCTIONS
+Google Sheets Real-Time Enquiry System
+====================================================
+
+இந்த steps-ஐ ஒரே ஒரு முறை பண்ணினால் போதும்.
+எந்த device-லயும், எந்த browser-லயும் enquiries தெரியும்!
+
+----------------------------------------------------
+STEP 1: Google Sheet உருவாக்குங்க
+----------------------------------------------------
+1. sheets.google.com → New spreadsheet
+2. பெயர் வையுங்க: "Rockfort Enquiries"
+3. அந்த sheet tab open-ஆக இருக்கட்டும்
+
+----------------------------------------------------
+STEP 2: Apps Script Code போடுங்க
+----------------------------------------------------
+1. Google Sheet → Extensions menu → Apps Script
+2. புதிய tab-ல் Apps Script திறக்கும்
+3. இருக்கும் code-ஐ எல்லாம் delete பண்ணுங்க
+4. "google-apps-script.js" கோப்பில் உள்ள code-ஐ
+   copy பண்ணி paste பண்ணுங்க
+5. Save பண்ணுங்க (Ctrl+S)
+
+----------------------------------------------------
+STEP 3: Web App-ஆக Deploy பண்ணுங்க
+----------------------------------------------------
+1. "Deploy" button → "New deployment"
+2. Type: "Web app" select பண்ணுங்க
+3. Description: "Rockfort Enquiry System"
+4. Execute as: "Me" 
+5. Who has access: "Anyone" ← இது முக்கியம்!
+6. "Deploy" click பண்ணுங்க
+7. Google account permission கேட்கும் → Allow பண்ணுங்க
+8. Web App URL copy பண்ணுங்க
+   (https://script.google.com/macros/s/XXXXX/exec போல் இருக்கும்)
+
+----------------------------------------------------
+STEP 4: URL-ஐ Files-ல் Paste பண்ணுங்க
+----------------------------------------------------
+index.html கோப்பை Notepad-ல் திறங்க:
+  'YOUR_GOOGLE_APPS_SCRIPT_URL'
+  என்பதை உங்கள் URL-ஐ வைத்து replace பண்ணுங்க
+
+admin.html கோப்பிலும் அதே மாதிரி replace பண்ணுங்க
+
+----------------------------------------------------
+STEP 5: Vercel-ல் Redeploy பண்ணுங்க
+----------------------------------------------------
+Option A (Drag & Drop):
+  1. vercel.com → உங்கள் project → Settings
+  2. அல்லது புதியதாக deploy பண்ணுங்க
+  3. இந்த folder-ஐ drag & drop பண்ணுங்க
+
+Option B (GitHub):
+  1. GitHub-ல் உங்கள் repo திறங்க
+  2. இந்த 3 files-ஐ upload பண்ணுங்க:
+     - index.html
+     - admin.html  
+     - vercel.json
+  3. Vercel auto-deploy ஆகும்
+
+----------------------------------------------------
+✅ DONE! இனி எப்படி வேலை செய்யும்:
+----------------------------------------------------
+• Customer form submit பண்ணும்போது → Google Sheet-ல் save ஆகும்
+• Owner mobile-ல் admin page திறந்தால் → உடனே தெரியும்
+• எந்த device-லயும், எந்த browser-லயும் OK!
+• Google Sheet-ஐ நேரடியாகவும் பார்க்கலாம்
+
+Your URLs:
+  Website : rockfortadventureholidays.vercel.app
+  Admin   : rockfortadventureholidays.vercel.app/admin
+
+====================================================

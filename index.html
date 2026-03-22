@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rockfort Adventure Holidays</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=Pacifico&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #0d9488; --teal-dark: #0f766e; --teal-light: #99f6e4;
+    --orange: #f97316; --orange-dark: #ea580c; --gold: #fbbf24;
+    --navy: #0c1a2e; --cream: #fef9f0; --text: #1c2b3a; --muted: #64748b;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); overflow-x: hidden; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1rem 2.5rem; display: flex; align-items: center; justify-content: space-between; background: rgba(12,26,46,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .nav-logo { font-family: 'Pacifico', cursive; font-size: 1.5rem; color: var(--gold); }
+  .nav-logo span { color: var(--teal-light); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-cta { background: var(--orange); color: white; border: none; padding: 0.6rem 1.4rem; border-radius: 50px; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: background 0.2s, transform 0.2s; }
+  .nav-cta:hover { background: var(--orange-dark); transform: translateY(-1px); }
+
+  #hero { min-height: 100vh; background: linear-gradient(135deg, #0c1a2e 0%, #0d4a47 50%, #0c1a2e 100%); position: relative; display: flex; align-items: center; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; background-image: radial-gradient(circle at 20% 50%, rgba(13,148,136,0.2) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(249,115,22,0.15) 0%, transparent 40%); }
+  .hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 60px 60px; }
+  .shape { position: absolute; border-radius: 50%; animation: float 6s ease-in-out infinite; }
+  .s1 { width:300px; height:300px; top:10%; right:15%; background:radial-gradient(circle,rgba(13,148,136,0.3),transparent); }
+  .s2 { width:200px; height:200px; bottom:20%; right:30%; background:radial-gradient(circle,rgba(249,115,22,0.2),transparent); animation-delay:2s; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-20px)} }
+
+  .hero-content { position:relative; z-index:2; max-width:1300px; margin:0 auto; padding:8rem 2.5rem 4rem; display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center; }
+  .hero-badge { display:inline-flex; align-items:center; gap:0.5rem; background:rgba(13,148,136,0.2); border:1px solid rgba(153,246,228,0.3); color:var(--teal-light); padding:0.4rem 1rem; border-radius:50px; font-size:0.8rem; font-weight:600; letter-spacing:1px; text-transform:uppercase; margin-bottom:1.5rem; animation:fadeUp 0.8s ease both; }
+  .hero-title { font-family:'Playfair Display',serif; font-size:clamp(2.8rem,5vw,4.5rem); line-height:1.1; color:white; animation:fadeUp 0.8s ease 0.2s both; }
+  .hero-title .accent { color:var(--gold); font-style:italic; }
+  .hero-title .accent-teal { color:var(--teal-light); }
+  .hero-sub { margin-top:1.5rem; color:rgba(255,255,255,0.65); font-size:1.05rem; line-height:1.7; max-width:480px; animation:fadeUp 0.8s ease 0.4s both; }
+  .hero-actions { margin-top:2.5rem; display:flex; gap:1rem; flex-wrap:wrap; animation:fadeUp 0.8s ease 0.6s both; }
+  .btn-primary { background:linear-gradient(135deg,var(--orange),var(--orange-dark)); color:white; border:none; padding:0.9rem 2rem; border-radius:50px; font-family:'DM Sans',sans-serif; font-weight:600; font-size:0.95rem; cursor:pointer; box-shadow:0 8px 24px rgba(249,115,22,0.4); transition:transform 0.2s,box-shadow 0.2s; text-decoration:none; display:inline-block; }
+  .btn-primary:hover { transform:translateY(-2px); box-shadow:0 12px 32px rgba(249,115,22,0.5); }
+  .btn-outline { background:transparent; color:white; border:1px solid rgba(255,255,255,0.3); padding:0.9rem 2rem; border-radius:50px; font-family:'DM Sans',sans-serif; font-weight:500; font-size:0.95rem; cursor:pointer; transition:border-color 0.2s,background 0.2s; text-decoration:none; display:inline-block; }
+  .btn-outline:hover { border-color:var(--teal-light); background:rgba(13,148,136,0.1); }
+  .hero-contacts { margin-top:2rem; display:flex; gap:1rem; flex-wrap:wrap; animation:fadeUp 0.8s ease 0.8s both; }
+  .contact-chip { display:flex; align-items:center; gap:0.5rem; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); padding:0.5rem 1rem; border-radius:50px; color:white; font-size:0.85rem; }
+  .hero-stats { display:grid; grid-template-columns:1fr 1fr; gap:1rem; animation:fadeUp 0.8s ease 0.3s both; }
+  .stat-card { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:1.5rem; text-align:center; backdrop-filter:blur(8px); transition:transform 0.3s; }
+  .stat-card:hover { transform:translateY(-4px); }
+  .stat-card .num { font-family:'Playfair Display',serif; font-size:2.5rem; font-weight:900; color:var(--gold); line-height:1; }
+  .stat-card.teal .num { color:var(--teal-light); }
+  .stat-card.orange .num { color:var(--orange); }
+  .stat-card .label { color:rgba(255,255,255,0.6); font-size:0.8rem; margin-top:0.4rem; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+  .transport-strip { background:linear-gradient(135deg,var(--navy),var(--teal-dark)); padding:3rem 0; }
+  .transport-inner { max-width:1300px; margin:0 auto; padding:0 2.5rem; display:flex; gap:1.5rem; flex-wrap:wrap; justify-content:center; }
+  .transport-pill { display:flex; align-items:center; gap:0.75rem; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); padding:0.75rem 1.5rem; border-radius:50px; color:white; font-weight:600; font-size:0.9rem; transition:background 0.2s; cursor:pointer; }
+  .transport-pill:hover { background:rgba(255,255,255,0.2); }
+
+  section { padding:5rem 0; }
+  .wrap { max-width:1300px; margin:0 auto; padding:0 2.5rem; }
+  .sec-label { display:inline-block; font-size:0.75rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--teal); margin-bottom:0.75rem; }
+  .sec-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,3.5vw,2.8rem); line-height:1.2; color:var(--text); }
+  .sec-title .italic { font-style:italic; color:var(--teal); }
+
+  #services { background:white; }
+  .services-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:1rem; margin-top:3rem; }
+  .svc-card { background:var(--cream); border:1px solid rgba(13,148,136,0.1); border-radius:16px; padding:1.5rem 1rem; text-align:center; transition:transform 0.3s,box-shadow 0.3s,border-color 0.3s; cursor:pointer; }
+  .svc-card:hover { transform:translateY(-6px); box-shadow:0 12px 32px rgba(13,148,136,0.15); border-color:var(--teal); }
+  .svc-icon { width:56px; height:56px; border-radius:14px; background:linear-gradient(135deg,var(--teal),var(--teal-dark)); display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; font-size:1.5rem; }
+  .svc-card.ora .svc-icon { background:linear-gradient(135deg,var(--orange),var(--orange-dark)); }
+  .svc-card.gld .svc-icon { background:linear-gradient(135deg,var(--gold),#d97706); }
+  .svc-name { font-weight:600; font-size:0.9rem; }
+
+  #destinations { background:var(--cream); }
+  .dest-tabs { display:flex; gap:0.5rem; flex-wrap:wrap; margin:2rem 0; }
+  .dest-tab { padding:0.5rem 1.2rem; border-radius:50px; border:1px solid rgba(13,148,136,0.2); background:white; color:var(--muted); font-size:0.85rem; font-weight:500; cursor:pointer; transition:all 0.2s; }
+  .dest-tab.active,.dest-tab:hover { background:var(--teal); color:white; border-color:var(--teal); }
+  .dest-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1.5rem; }
+  .dest-card { background:white; border-radius:20px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,0.06); transition:transform 0.3s,box-shadow 0.3s; }
+  .dest-card:hover { transform:translateY(-8px); box-shadow:0 16px 40px rgba(0,0,0,0.12); }
+  .dest-head { height:90px; display:flex; align-items:flex-end; padding:1rem 1.2rem; position:relative; overflow:hidden; }
+  .dest-head::before { content:''; position:absolute; inset:0; background:linear-gradient(to bottom,transparent,rgba(0,0,0,0.5)); }
+  .dest-head .emoji { position:absolute; top:50%; left:50%; transform:translate(-50%,-60%); font-size:2.2rem; }
+  .dest-name { font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:700; color:white; position:relative; z-index:1; }
+  .dest-body { padding:1.2rem; }
+  .dest-spots { list-style:none; display:flex; flex-direction:column; gap:0.3rem; }
+  .dest-spots li { display:flex; align-items:center; gap:0.5rem; font-size:0.82rem; color:var(--muted); }
+  .dest-spots li::before { content:''; width:5px; height:5px; border-radius:50%; background:var(--teal); flex-shrink:0; }
+
+  .bg-green{background:linear-gradient(135deg,#065f46,#047857)} .bg-blue{background:linear-gradient(135deg,#1e40af,#1d4ed8)} .bg-purple{background:linear-gradient(135deg,#6b21a8,#7c3aed)} .bg-red{background:linear-gradient(135deg,#991b1b,#b91c1c)} .bg-teal{background:linear-gradient(135deg,#0f766e,#0d9488)} .bg-orange{background:linear-gradient(135deg,#c2410c,#ea580c)} .bg-pink{background:linear-gradient(135deg,#9d174d,#be185d)} .bg-indigo{background:linear-gradient(135deg,#312e81,#4338ca)} .bg-brown{background:linear-gradient(135deg,#78350f,#92400e)} .bg-rose{background:linear-gradient(135deg,#881337,#be123c)} .bg-sky{background:linear-gradient(135deg,#0c4a6e,#0369a1)} .bg-lime{background:linear-gradient(135deg,#365314,#3f6212)} .bg-amber{background:linear-gradient(135deg,#78350f,#b45309)} .bg-cyan{background:linear-gradient(135deg,#164e63,#155e75)} .bg-violet{background:linear-gradient(135deg,#4c1d95,#5b21b6)} .bg-fuchsia{background:linear-gradient(135deg,#701a75,#86198f)} .bg-dg{background:linear-gradient(135deg,#14532d,#166534)} .bg-db{background:linear-gradient(135deg,#1e3a5f,#1e40af)}
+
+  #about { background:linear-gradient(135deg,var(--navy) 0%,#0d3d45 100%); position:relative; overflow:hidden; }
+  #about::before { content:''; position:absolute; inset:0; background-image:radial-gradient(circle at 70% 50%,rgba(13,148,136,0.15) 0%,transparent 60%); }
+  .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:center; position:relative; z-index:1; }
+  .about-text .sec-title { color:white; }
+  .about-text .sec-label { color:var(--teal-light); }
+  .about-desc { color:rgba(255,255,255,0.7); line-height:1.8; margin-top:1.5rem; font-size:0.95rem; }
+  .about-feats { margin-top:2rem; display:flex; flex-direction:column; gap:1rem; }
+  .about-feat { display:flex; gap:1rem; align-items:flex-start; }
+  .feat-icon { width:40px; height:40px; border-radius:10px; flex-shrink:0; background:rgba(13,148,136,0.2); border:1px solid rgba(153,246,228,0.2); display:flex; align-items:center; justify-content:center; font-size:1.1rem; }
+  .feat-text h4 { color:white; font-size:0.9rem; font-weight:600; }
+  .feat-text p { color:rgba(255,255,255,0.55); font-size:0.82rem; margin-top:0.2rem; }
+  .about-visual { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  .abox { background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); border-radius:20px; padding:2rem 1.5rem; text-align:center; backdrop-filter:blur(8px); }
+  .abox .big { font-family:'Playfair Display',serif; font-size:3rem; font-weight:900; color:var(--gold); line-height:1; }
+  .abox .big.teal { color:var(--teal-light); }
+  .abox .big.orange { color:var(--orange); }
+  .abox p { color:rgba(255,255,255,0.55); font-size:0.8rem; margin-top:0.5rem; }
+  .abox.wide { grid-column:span 2; display:flex; align-items:center; gap:2rem; }
+  .abox.wide .big { font-size:4rem; }
+
+  #contact { background:white; }
+  .contact-grid { display:grid; grid-template-columns:1fr 1.4fr; gap:4rem; margin-top:3rem; }
+  .cinfo h3 { font-family:'Playfair Display',serif; font-size:1.5rem; margin-bottom:1rem; }
+  .cinfo p { color:var(--muted); line-height:1.7; margin-bottom:2rem; }
+  .citems { display:flex; flex-direction:column; gap:1rem; }
+  .citem { display:flex; gap:1rem; align-items:center; padding:1rem; border-radius:12px; background:var(--cream); border:1px solid rgba(13,148,136,0.1); transition:border-color 0.2s; }
+  .citem:hover { border-color:var(--teal); }
+  .citem-icon { width:44px; height:44px; border-radius:10px; flex-shrink:0; background:linear-gradient(135deg,var(--teal),var(--teal-dark)); display:flex; align-items:center; justify-content:center; font-size:1.2rem; }
+  .citem-label { font-size:0.75rem; color:var(--muted); }
+  .citem-val { font-weight:600; font-size:0.9rem; }
+  .cform { background:var(--cream); border-radius:24px; padding:2.5rem; border:1px solid rgba(13,148,136,0.1); }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  .fg { display:flex; flex-direction:column; gap:0.4rem; margin-bottom:1rem; }
+  .fg label { font-size:0.8rem; font-weight:600; }
+  .fg input, .fg select, .fg textarea { padding:0.75rem 1rem; border:1px solid rgba(13,148,136,0.2); border-radius:10px; font-family:'DM Sans',sans-serif; font-size:0.9rem; background:white; color:var(--text); outline:none; transition:border-color 0.2s; }
+  .fg input:focus, .fg select:focus, .fg textarea:focus { border-color:var(--teal); }
+  .fg textarea { resize:vertical; min-height:100px; }
+
+  /* SETUP BANNER */
+  .setup-banner { background:linear-gradient(135deg,#fef3c7,#fde68a); border:2px dashed #f59e0b; border-radius:16px; padding:1.5rem 2rem; margin-bottom:2rem; }
+  .setup-banner h3 { color:#92400e; font-size:1rem; font-weight:700; margin-bottom:0.5rem; }
+  .setup-banner p { color:#78350f; font-size:0.85rem; line-height:1.6; }
+  .setup-banner code { background:rgba(0,0,0,0.1); padding:0.15rem 0.4rem; border-radius:4px; font-family:monospace; font-size:0.82rem; }
+
+  .submit-btn { width:100%; background:linear-gradient(135deg,var(--teal),var(--teal-dark)); color:white; border:none; padding:1rem 2rem; border-radius:12px; font-family:'DM Sans',sans-serif; font-weight:700; font-size:1rem; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; justify-content:center; gap:0.5rem; }
+  .submit-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(13,148,136,0.4); }
+  .submit-btn:disabled { opacity:0.7; cursor:not-allowed; transform:none; }
+  .form-notice { margin-top:1rem; padding:0.75rem 1rem; border-radius:10px; font-size:0.85rem; font-weight:500; display:none; }
+  .form-notice.success { background:#dcfce7; color:#166534; border:1px solid #bbf7d0; display:block; }
+  .form-notice.error { background:#fee2e2; color:#991b1b; border:1px solid #fecaca; display:block; }
+
+  footer { background:var(--navy); color:rgba(255,255,255,0.7); padding:3rem 0 1.5rem; }
+  .footer-inner { max-width:1300px; margin:0 auto; padding:0 2.5rem; }
+  .footer-top { display:grid; grid-template-columns:2fr 1fr 1fr; gap:3rem; padding-bottom:2rem; border-bottom:1px solid rgba(255,255,255,0.08); margin-bottom:1.5rem; }
+  .footer-logo { font-family:'Pacifico',cursive; font-size:1.6rem; color:var(--gold); margin-bottom:1rem; }
+  .footer-logo span { color:var(--teal-light); }
+  .footer-desc { font-size:0.85rem; line-height:1.7; max-width:280px; }
+  .footer-col h4 { color:white; font-size:0.85rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:1rem; }
+  .footer-col ul { list-style:none; display:flex; flex-direction:column; gap:0.5rem; }
+  .footer-col ul li { font-size:0.83rem; }
+  .footer-bottom { display:flex; justify-content:space-between; font-size:0.78rem; color:rgba(255,255,255,0.4); }
+  .footer-tag { font-style:italic; color:var(--gold); }
+
+  @media(max-width:768px) {
+    .nav-links { display:none; }
+    .hero-content, .about-grid, .contact-grid { grid-template-columns:1fr; }
+    .footer-top { grid-template-columns:1fr; }
+    .form-row { grid-template-columns:1fr; }
+    .hero-content { padding-top:6rem; }
+    .abox.wide { flex-direction:column; gap:1rem; }
+  }
+</style>
+</head>
+<body>
+
+<script>
+  // ============================================================
+  // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
+  // ============================================================
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzPF2yCI1i5FRsAUOE3bFYvYAom7bNJ1S8IJfkAKSvIPIENzDO_CUryeW-9tge6qEWF2w/exec';
+  // ============================================================
+  const isConfigured = APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbzPF2yCI1i5FRsAUOE3bFYvYAom7bNJ1S8IJfkAKSvIPIENzDO_CUryeW-9tge6qEWF2w/exec';
+</script>
+
+<nav>
+  <div class="nav-logo">Rock<span>fort</span></div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#destinations">Destinations</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Plan My Trip</button>
+</nav>
+
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="shape s1"></div>
+  <div class="shape s2"></div>
+  <div class="hero-content">
+    <div>
+      <div class="hero-badge">✈️ &nbsp; 9+ Years of Adventure</div>
+      <h1 class="hero-title">Explore Your<br><span class="accent">Dream</span><br><span class="accent-teal">Destination</span></h1>
+      <p class="hero-sub">Your Way… Your Dream. Plan Your Vacation & Enjoy the Trip. From serene hill stations to bustling cities — we craft journeys that last a lifetime.</p>
+      <div class="hero-actions">
+        <a href="#destinations" class="btn-primary">Browse Destinations</a>
+        <a href="#contact" class="btn-outline">Get a Free Quote</a>
+      </div>
+      <div class="hero-contacts">
+        <div class="contact-chip">📞 9385945156</div>
+        <div class="contact-chip">📞 9629441044</div>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-card"><div class="num">9+</div><div class="label">Years Experience</div></div>
+      <div class="stat-card teal"><div class="num">20+</div><div class="label">Destinations</div></div>
+      <div class="stat-card orange"><div class="num">8</div><div class="label">Services</div></div>
+      <div class="stat-card"><div class="num">∞</div><div class="label">Happy Travellers</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="transport-strip">
+  <div class="transport-inner">
+    <div class="transport-pill">✈️ Flights</div>
+    <div class="transport-pill">🚆 Trains</div>
+    <div class="transport-pill">🛳️ Cruises</div>
+    <div class="transport-pill">🏨 Resorts</div>
+    <div class="transport-pill">⛺ Hiking & Camping</div>
+  </div>
+</div>
+
+<section id="services">
+  <div class="wrap">
+    <span class="sec-label">What We Offer</span>
+    <h2 class="sec-title">Our <span class="italic">Services</span></h2>
+    <div class="services-grid">
+      <div class="svc-card"><div class="svc-icon">🏭</div><div class="svc-name">Industrial Visit</div></div>
+      <div class="svc-card ora"><div class="svc-icon">💼</div><div class="svc-name">Corporate Tours</div></div>
+      <div class="svc-card"><div class="svc-icon">👨‍👩‍👧</div><div class="svc-name">Family Tours</div></div>
+      <div class="svc-card gld"><div class="svc-icon">💑</div><div class="svc-name">Honeymoon Packages</div></div>
+      <div class="svc-card ora"><div class="svc-icon">🚗</div><div class="svc-name">Vehicle Renting</div></div>
+      <div class="svc-card"><div class="svc-icon">🍽️</div><div class="svc-name">Catering</div></div>
+      <div class="svc-card gld"><div class="svc-icon">📸</div><div class="svc-name">Photography</div></div>
+      <div class="svc-card"><div class="svc-icon">🎓</div><div class="svc-name">Edu-Tours & Leisure</div></div>
+      <div class="svc-card ora"><div class="svc-icon">🎯</div><div class="svc-name">Business Trips</div></div>
+      <div class="svc-card gld"><div class="svc-icon">✨</div><div class="svc-name">Customised Trips</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="destinations">
+  <div class="wrap">
+    <span class="sec-label">Explore India</span>
+    <h2 class="sec-title">Popular <span class="italic">Destinations</span></h2>
+    <div class="dest-tabs">
+      <button class="dest-tab active" onclick="filterDest('all',this)">All</button>
+      <button class="dest-tab" onclick="filterDest('kerala',this)">Kerala</button>
+      <button class="dest-tab" onclick="filterDest('karnataka',this)">Karnataka</button>
+      <button class="dest-tab" onclick="filterDest('tamilnadu',this)">Tamil Nadu</button>
+      <button class="dest-tab" onclick="filterDest('north',this)">North India</button>
+    </div>
+    <div class="dest-grid">
+      <div class="dest-card" data-r="kerala"><div class="dest-head bg-green"><span class="emoji">🌿</span><span class="dest-name">Wayanad</span></div><div class="dest-body"><ul class="dest-spots"><li>Soochipara Falls</li><li>Chain Tree View</li><li>Banasuna Dam</li><li>Pookode Lake</li><li>Edakkal Museum</li></ul></div></div>
+      <div class="dest-card" data-r="kerala"><div class="dest-head bg-teal"><span class="emoji">🏛️</span><span class="dest-name">Kochi</span></div><div class="dest-body"><ul class="dest-spots"><li>Fort Kochi</li><li>Marine Drive</li><li>Vypin Beach</li><li>Wonder-la</li><li>Lulu Mall</li></ul></div></div>
+      <div class="dest-card" data-r="kerala"><div class="dest-head bg-blue"><span class="emoji">🌊</span><span class="dest-name">Varkala</span></div><div class="dest-body"><ul class="dest-spots"><li>Cliff Beach</li><li>Munroe Island</li><li>Kappil Beach</li><li>Helipad Beach</li></ul></div></div>
+      <div class="dest-card" data-r="kerala"><div class="dest-head bg-purple"><span class="emoji">🏙️</span><span class="dest-name">Trivandrum</span></div><div class="dest-body"><ul class="dest-spots"><li>Kovalam Beach</li><li>Poovar Island</li><li>Padmanabhaswamy Temple</li><li>Thiruvanathapuram Zoo</li><li>Vizhinjam Beach</li></ul></div></div>
+      <div class="dest-card" data-r="kerala"><div class="dest-head bg-dg"><span class="emoji">⛰️</span><span class="dest-name">Munnar</span></div><div class="dest-body"><ul class="dest-spots"><li>Rose Garden</li><li>Eco Point</li><li>Top Station</li><li>Viripara Falls</li><li>Mattupatti Dam</li></ul></div></div>
+      <div class="dest-card" data-r="kerala"><div class="dest-head bg-lime"><span class="emoji">🌾</span><span class="dest-name">Vagamon</span></div><div class="dest-body"><ul class="dest-spots"><li>Pine Forest</li><li>Uluppuni Meadows</li><li>Idukki Dam View</li><li>Ulupuni Water Falls</li><li>Jeep Safari</li></ul></div></div>
+      <div class="dest-card" data-r="tamilnadu"><div class="dest-head bg-sky"><span class="emoji">🌸</span><span class="dest-name">Ooty</span></div><div class="dest-body"><ul class="dest-spots"><li>Doddabetta</li><li>Botanical & Rose Garden</li><li>Pykara Lake & Falls</li><li>6th & 7th Mile</li><li>Sims Park</li></ul></div></div>
+      <div class="dest-card" data-r="tamilnadu"><div class="dest-head bg-orange"><span class="emoji">🏖️</span><span class="dest-name">Pondicherry</span></div><div class="dest-body"><ul class="dest-spots"><li>Rock Beach</li><li>Auroville</li><li>French Colony</li><li>Sacred Heart Basilica</li><li>Paradise Beach</li></ul></div></div>
+      <div class="dest-card" data-r="karnataka"><div class="dest-head bg-amber"><span class="emoji">☕</span><span class="dest-name">Chikkamagaluru</span></div><div class="dest-body"><ul class="dest-spots"><li>Mullayanagiri Peak</li><li>Baba Budangiri</li><li>Hebbe Falls</li><li>Z-Point</li></ul></div></div>
+      <div class="dest-card" data-r="karnataka"><div class="dest-head bg-pink"><span class="emoji">🌆</span><span class="dest-name">Bangalore</span></div><div class="dest-body"><ul class="dest-spots"><li>Lal-Bagh</li><li>Cubbon Park</li><li>Visvesvaraya Museum</li><li>HAL AeroSpace Museum</li><li>Wonder-la</li></ul></div></div>
+      <div class="dest-card" data-r="karnataka"><div class="dest-head bg-violet"><span class="emoji">👑</span><span class="dest-name">Mysuru</span></div><div class="dest-body"><ul class="dest-spots"><li>Palace</li><li>Chammundi Hills</li><li>Zoo</li><li>KRS Dam</li><li>Shuka Vana</li></ul></div></div>
+      <div class="dest-card" data-r="karnataka"><div class="dest-head bg-brown"><span class="emoji">🏛️</span><span class="dest-name">Hampi</span></div><div class="dest-body"><ul class="dest-spots"><li>Queen's Bath</li><li>Badami Cave</li><li>Pattadakkal</li><li>Ai-hole</li><li>Virupaksha Temple</li></ul></div></div>
+      <div class="dest-card" data-r="karnataka"><div class="dest-head bg-teal"><span class="emoji">🌊</span><span class="dest-name">Goa</span></div><div class="dest-body"><ul class="dest-spots"><li>Baga Beach</li><li>Calangute Beach</li><li>Aguada Fort</li><li>Chapora Fort</li><li>Old Goa Church</li></ul></div></div>
+      <div class="dest-card" data-r="karnataka"><div class="dest-head bg-cyan"><span class="emoji">🏖️</span><span class="dest-name">Gokarna</span></div><div class="dest-body"><ul class="dest-spots"><li>Om Beach</li><li>Kudle Beach</li><li>Murudeshwar</li><li>Paradise Beach</li><li>Mirjan Fort</li></ul></div></div>
+      <div class="dest-card" data-r="karnataka"><div class="dest-head bg-db"><span class="emoji">☁️</span><span class="dest-name">Coorg</span></div><div class="dest-body"><ul class="dest-spots"><li>The Awesome Paradise on Earth</li></ul></div></div>
+      <div class="dest-card" data-r="north"><div class="dest-head bg-indigo"><span class="emoji">🕌</span><span class="dest-name">Hyderabad</span></div><div class="dest-body"><ul class="dest-spots"><li>Golconda Fort</li><li>Birla Mandir</li><li>Charminar</li><li>Ramoji Film City</li></ul></div></div>
+      <div class="dest-card" data-r="north"><div class="dest-head bg-red"><span class="emoji">🏯</span><span class="dest-name">Delhi</span></div><div class="dest-body"><ul class="dest-spots"><li>Red Fort</li><li>India Gate</li><li>Lotus Temple</li><li>Qutab Minar</li><li>Akshardham</li></ul></div></div>
+      <div class="dest-card" data-r="north"><div class="dest-head bg-rose"><span class="emoji">🕍</span><span class="dest-name">Agra</span></div><div class="dest-body"><ul class="dest-spots"><li>Taj Mahal</li><li>Fatehpur Sikri</li><li>Agra Fort</li><li>Akbar's Tomb</li><li>Jama Masjid</li></ul></div></div>
+      <div class="dest-card" data-r="north"><div class="dest-head bg-sky"><span class="emoji">🏔️</span><span class="dest-name">Darjeeling</span></div><div class="dest-body"><ul class="dest-spots"><li>Kanchenjunga Mountain</li><li>Tiger Hill</li><li>Himalayan Tibet Museum</li><li>Japanese Peace Pagoda</li></ul></div></div>
+      <div class="dest-card" data-r="north"><div class="dest-head bg-fuchsia"><span class="emoji">🏔️</span><span class="dest-name">Sikkim</span></div><div class="dest-body"><ul class="dest-spots"><li>Snow-capped Himalayas</li><li>Buddhist Monasteries</li><li>Tsomgo Lake</li></ul></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="about-text">
+        <span class="sec-label">Who We Are</span>
+        <h2 class="sec-title">Adventure is <span class="italic" style="color:var(--teal-light)">Our Passion</span></h2>
+        <p class="about-desc">We have helped many people with their special trips and leisure journeys for almost 9 years. We provide not only excellent services but also featured packages for special occasions.</p>
+        <div class="about-feats">
+          <div class="about-feat"><div class="feat-icon">🎯</div><div class="feat-text"><h4>Customised for You</h4><p>Every trip tailored to your preferences — your way, your dream.</p></div></div>
+          <div class="about-feat"><div class="feat-icon">🤝</div><div class="feat-text"><h4>Trusted for 9+ Years</h4><p>A proven track record of exceptional travel experiences across India.</p></div></div>
+          <div class="about-feat"><div class="feat-icon">🌟</div><div class="feat-text"><h4>End-to-End Services</h4><p>From flight bookings to catering and photography — everything under one roof.</p></div></div>
+        </div>
+      </div>
+      <div class="about-visual">
+        <div class="abox"><div class="big">9+</div><p>Years in Business</p></div>
+        <div class="abox"><div class="big teal">20+</div><p>Destinations</p></div>
+        <div class="abox wide"><div><div class="big orange">100%</div><p>Customised</p></div><div><p style="color:rgba(255,255,255,0.6);font-size:0.85rem;line-height:1.6;">Any kind of customised trips to suit your schedule, budget and desires.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <span class="sec-label">Get in Touch</span>
+    <h2 class="sec-title">Plan Your <span class="italic">Perfect Trip</span></h2>
+    <div class="contact-grid">
+      <div class="cinfo">
+        <h3>Ready to Explore?</h3>
+        <p>Pack your bags and set off for another escapade to mind-boggling places around the globe. Reach out and let's make it happen!</p>
+        <div class="citems">
+          <div class="citem"><div class="citem-icon">📞</div><div><div class="citem-label">Phone</div><div class="citem-val">9385945156</div></div></div>
+          <div class="citem"><div class="citem-icon">📱</div><div><div class="citem-label">Alternate</div><div class="citem-val">9629441044</div></div></div>
+          <div class="citem"><div class="citem-icon">🏢</div><div><div class="citem-label">Company</div><div class="citem-val">Rockfort Adventure Holidays</div></div></div>
+        </div>
+      </div>
+      <div class="cform">
+       
+        
+        <div class="form-row">
+          <div class="fg"><label>Your Name *</label><input type="text" id="f_name" placeholder="Full name"></div>
+          <div class="fg"><label>Phone Number *</label><input type="tel" id="f_phone" placeholder="+91 XXXXX XXXXX"></div>
+        </div>
+        <div class="fg"><label>Email Address</label><input type="email" id="f_email" placeholder="you@example.com"></div>
+        <div class="form-row">
+          <div class="fg">
+            <label>Destination *</label>
+            <select id="f_dest">
+              <option value="">Select...</option>
+              <option>Ooty</option><option>Wayanad</option><option>Munnar</option><option>Kochi</option>
+              <option>Vagamon</option><option>Varkala</option><option>Trivandrum</option><option>Coorg</option>
+              <option>Chikkamagaluru</option><option>Bangalore</option><option>Mysuru</option><option>Hampi</option>
+              <option>Goa</option><option>Gokarna</option><option>Hyderabad</option><option>Delhi</option>
+              <option>Agra</option><option>Pondicherry</option><option>Darjeeling</option><option>Sikkim</option>
+              <option>Customised Trip</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Service Type</label>
+            <select id="f_service">
+              <option value="">Select...</option>
+              <option>Family Tour</option><option>Honeymoon Package</option><option>Corporate Tour</option>
+              <option>Industrial Visit</option><option>Edu-Tour</option><option>Vehicle Renting</option><option>Customised Trip</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="fg"><label>Travel Date</label><input type="date" id="f_date"></div>
+          <div class="fg"><label>Group Size</label><input type="number" id="f_group" placeholder="No. of people" min="1"></div>
+        </div>
+        <div class="fg"><label>Message</label><textarea id="f_msg" placeholder="Tell us about your trip plans, budget, special requirements..."></textarea></div>
+        <button class="submit-btn" id="submitBtn" onclick="submitEnquiry()">
+          <span id="btnText">Send Enquiry ✈️</span>
+        </button>
+        <div class="form-notice" id="formNotice"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">Rock<span>fort</span></div>
+        <p class="footer-desc">Your Way… Your Dream. Crafting memorable travel experiences across India for over 9 years.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#services" style="color:inherit;text-decoration:none">Services</a></li>
+          <li><a href="#destinations" style="color:inherit;text-decoration:none">Destinations</a></li>
+          <li><a href="#about" style="color:inherit;text-decoration:none">About Us</a></li>
+          <li><a href="#contact" style="color:inherit;text-decoration:none">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li>Family Tours</li><li>Honeymoon Packages</li><li>Corporate Tours</li>
+          <li>Vehicle Renting</li><li>Photography</li><li>Customised Trips</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Rockfort Adventure Holidays. All rights reserved.</span>
+      <span class="footer-tag">"Your Way… Your Dream…"</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  if (isConfigured) document.getElementById('setupBanner').style.display = 'none';
+
+  function filterDest(region, btn) {
+    document.querySelectorAll('.dest-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.dest-card').forEach(card => {
+      card.style.display = (region === 'all' || card.dataset.r === region) ? '' : 'none';
+    });
+  }
+
+  async function submitEnquiry() {
+    const name  = document.getElementById('f_name').value.trim();
+    const phone = document.getElementById('f_phone').value.trim();
+    const dest  = document.getElementById('f_dest').value;
+    if (!name || !phone || !dest) {
+      showNotice('error', '⚠️ Name, Phone மற்றும் Destination கட்டாயம் தேவை.');
+      return;
+    }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    document.getElementById('btnText').textContent = '⏳ Sending...';
+
+    const data = {
+      name, phone,
+      email:   document.getElementById('f_email').value.trim(),
+      dest,
+      service: document.getElementById('f_service').value,
+      date:    document.getElementById('f_date').value,
+      group:   document.getElementById('f_group').value,
+      msg:     document.getElementById('f_msg').value.trim()
+    };
+
+    // Always save to localStorage as backup
+    const stored = JSON.parse(localStorage.getItem('rockfort_enquiries') || '[]');
+    data.id = Date.now();
+    data.timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+    data.status = 'New';
+    stored.unshift(data);
+    localStorage.setItem('rockfort_enquiries', JSON.stringify(stored));
+
+    // Send to Google Sheets if configured
+    if (isConfigured) {
+      try {
+        await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify(data)
+        });
+        showNotice('success', '✅ Enquiry பெறப்பட்டது! 24 மணி நேரத்தில் தொடர்பு கொள்வோம்.');
+      } catch(e) {
+        showNotice('success', '✅ Enquiry saved! நன்றி.');
+      }
+    } else {
+      showNotice('success', '✅ Enquiry saved! (Google Sheets setup பண்ணினால் எந்த device-லயும் தெரியும்)');
+    }
+
+    // Reset
+    ['f_name','f_phone','f_email','f_dest','f_service','f_date','f_group','f_msg']
+      .forEach(id => document.getElementById(id).value = '');
+    btn.disabled = false;
+    document.getElementById('btnText').textContent = 'Send Enquiry ✈️';
+  }
+
+  function showNotice(type, msg) {
+    const el = document.getElementById('formNotice');
+    el.className = 'form-notice ' + type;
+    el.textContent = msg;
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 7000);
+  }
+</script>
+</body>
+</html>

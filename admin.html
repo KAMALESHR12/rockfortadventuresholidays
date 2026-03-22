@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Rockfort Adventure Holidays</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal:#0d9488; --teal-dark:#0f766e; --teal-light:#ccfbf1;
+    --orange:#f97316; --gold:#fbbf24; --navy:#0c1a2e;
+    --cream:#f8fafc; --white:#fff; --text:#0f172a; --muted:#64748b; --border:#e2e8f0;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
+
+  .sidebar{position:fixed;left:0;top:0;bottom:0;width:240px;background:var(--navy);display:flex;flex-direction:column;padding:1.5rem 0;z-index:10}
+  .sb-logo{padding:0 1.5rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:1rem}
+  .sb-logo-text{font-family:'Pacifico',cursive;font-size:1.3rem;color:var(--gold)}
+  .sb-logo-text span{color:#99f6e4}
+  .sb-tag{font-size:0.7rem;color:rgba(255,255,255,0.4);letter-spacing:1px;text-transform:uppercase;margin-top:0.2rem}
+  .sb-nav{display:flex;flex-direction:column;gap:0.25rem;padding:0 0.75rem;flex:1}
+  .sb-link{display:flex;align-items:center;gap:0.75rem;padding:0.75rem;border-radius:10px;color:rgba(255,255,255,0.6);font-size:0.875rem;font-weight:500;cursor:pointer;transition:all 0.2s;border:none;background:none;width:100%;text-align:left}
+  .sb-link:hover,.sb-link.active{background:rgba(13,148,136,0.2);color:white}
+  .sb-link.active{color:var(--teal-light)}
+  .sb-badge{margin-left:auto;background:var(--orange);color:white;font-size:0.7rem;font-weight:700;padding:0.1rem 0.45rem;border-radius:20px;min-width:20px;text-align:center}
+  .sb-footer{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,0.08);margin-top:auto}
+  .sb-footer p{font-size:0.75rem;color:rgba(255,255,255,0.3)}
+
+  .main{margin-left:240px;padding:2rem;min-height:100vh}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem}
+  .topbar-left h1{font-size:1.4rem;font-weight:700}
+  .topbar-left p{color:var(--muted);font-size:0.85rem;margin-top:0.2rem}
+  .topbar-right{display:flex;gap:0.75rem;align-items:center}
+
+  .btn{padding:0.6rem 1.2rem;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s;border:none}
+  .btn-teal{background:var(--teal);color:white}
+  .btn-teal:hover{background:var(--teal-dark)}
+  .btn-ghost{background:var(--white);color:var(--text);border:1px solid var(--border)}
+  .btn-ghost:hover{border-color:var(--teal);color:var(--teal)}
+  .btn-sm-danger{background:#fee2e2;color:#dc2626;border:none;padding:0.3rem 0.75rem;border-radius:6px;font-size:0.75rem;font-weight:600;cursor:pointer}
+  .btn-sm-view{background:#dbeafe;color:#1e40af;border:none;padding:0.3rem 0.75rem;border-radius:6px;font-size:0.75rem;font-weight:600;cursor:pointer}
+
+  /* SETUP CARD */
+  .setup-card{background:linear-gradient(135deg,#fef3c7,#fde68a);border:2px dashed #f59e0b;border-radius:16px;padding:1.5rem 2rem;margin-bottom:2rem}
+  .setup-card h3{color:#92400e;font-weight:700;margin-bottom:0.5rem}
+  .setup-card p{color:#78350f;font-size:0.88rem;line-height:1.7}
+  .setup-card code{background:rgba(0,0,0,0.12);padding:0.15rem 0.5rem;border-radius:4px;font-family:monospace;font-size:0.82rem}
+  .setup-card ol{margin:0.75rem 0 0 1.2rem}
+  .setup-card ol li{color:#78350f;font-size:0.85rem;margin-bottom:0.4rem}
+
+  .stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
+  .stat-box{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem}
+  .stat-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+  .si-teal{background:var(--teal-light)} .si-orange{background:#ffedd5} .si-green{background:#dcfce7} .si-blue{background:#dbeafe}
+  .stat-num{font-size:1.8rem;font-weight:700;line-height:1}
+  .stat-label{font-size:0.78rem;color:var(--muted);margin-top:0.2rem}
+
+  .filters{display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;margin-bottom:1.5rem;background:var(--white);padding:1rem 1.25rem;border-radius:12px;border:1px solid var(--border)}
+  .filter-label{font-size:0.8rem;font-weight:600;color:var(--muted)}
+  .filter-pill{padding:0.4rem 1rem;border-radius:50px;border:1px solid var(--border);background:var(--cream);color:var(--muted);font-size:0.82rem;font-weight:500;cursor:pointer;transition:all 0.2s}
+  .filter-pill.active,.filter-pill:hover{background:var(--teal);color:white;border-color:var(--teal)}
+  .search-wrap{margin-left:auto;display:flex;align-items:center;gap:0.5rem;background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:0.4rem 0.75rem}
+  .search-wrap input{border:none;background:none;outline:none;font-family:'DM Sans',sans-serif;font-size:0.85rem;width:180px}
+
+  .table-wrap{background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+  .table-head-bar{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+  .table-head-bar h3{font-size:0.95rem;font-weight:700}
+  table{width:100%;border-collapse:collapse}
+  thead{background:var(--cream)}
+  th{padding:0.75rem 1rem;text-align:left;font-size:0.75rem;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap}
+  td{padding:0.9rem 1rem;font-size:0.84rem;border-bottom:1px solid var(--border);vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:#f8fafc}
+
+  .status-sel{padding:0.35rem 0.65rem;border-radius:8px;border:1px solid var(--border);font-family:'DM Sans',sans-serif;font-size:0.82rem;outline:none;cursor:pointer}
+  .status-sel:focus{border-color:var(--teal)}
+
+  .avatar{width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;color:white;margin-right:0.6rem;flex-shrink:0}
+  .name-cell{display:flex;align-items:center}
+  .c0{background:#0d9488}.c1{background:#f97316}.c2{background:#6366f1}.c3{background:#ec4899}.c4{background:#f59e0b}.c5{background:#14b8a6}.c6{background:#8b5cf6}.c7{background:#ef4444}
+
+  .empty-state{text-align:center;padding:4rem 2rem;color:var(--muted)}
+  .empty-state .ei{font-size:3.5rem;margin-bottom:1rem;display:block}
+
+  /* Loading spinner */
+  .loading{text-align:center;padding:3rem;color:var(--muted)}
+  .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1rem}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* MODAL */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+  .overlay.open{display:flex}
+  .modal{background:white;border-radius:20px;padding:2rem;width:520px;max-width:95vw;max-height:85vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,0.15)}
+  .modal-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem}
+  .modal-title{font-size:1.15rem;font-weight:700}
+  .modal-close{background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--muted);line-height:1}
+  .detail-row{display:grid;grid-template-columns:120px 1fr;gap:0.5rem;padding:0.6rem 0;border-bottom:1px solid var(--border)}
+  .detail-row:last-child{border-bottom:none}
+  .dl{font-size:0.78rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px}
+  .dv{font-size:0.88rem;color:var(--text);font-weight:500}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:2rem;right:2rem;background:var(--navy);color:white;padding:0.75rem 1.25rem;border-radius:10px;font-size:0.85rem;font-weight:500;opacity:0;transform:translateY(10px);transition:all 0.3s;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+  .toast.show{opacity:1;transform:translateY(0)}
+
+  /* Live indicator */
+  .live-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;animation:pulse 2s infinite;margin-right:0.4rem}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+  /* Source badge */
+  .src-sheets{background:#dcfce7;color:#166534;font-size:0.7rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:50px}
+  .src-local{background:#fef3c7;color:#92400e;font-size:0.7rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:50px}
+
+  @media(max-width:768px){
+    .sidebar{display:none}
+    .main{margin-left:0}
+    .stats-strip{grid-template-columns:1fr 1fr}
+  }
+</style>
+</head>
+<body>
+
+<script>
+  // ============================================================
+  // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE (same as index.html)
+  // ============================================================
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzPF2yCI1i5FRsAUOE3bFYvYAom7bNJ1S8IJfkAKSvIPIENzDO_CUryeW-9tge6qEWF2w/exec';
+  // ============================================================
+  const isConfigured = APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbzPF2yCI1i5FRsAUOE3bFYvYAom7bNJ1S8IJfkAKSvIPIENzDO_CUryeW-9tge6qEWF2w/exec';
+</script>
+
+<div class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-text">Rock<span>fort</span></div>
+    <div class="sb-tag">Admin Panel</div>
+  </div>
+  <nav class="sb-nav">
+    <button class="sb-link active">
+      <span>📋</span> Enquiries
+      <span class="sb-badge" id="newBadge" style="display:none">0</span>
+    </button>
+    <button class="sb-link" onclick="exportCSV()"><span>⬇️</span> Export CSV</button>
+    <button class="sb-link" onclick="loadEnquiries()"><span>🔄</span> Refresh</button>
+    <button class="sb-link" onclick="openAddModal()"><span>➕</span> Add Manual</button>
+  </nav>
+  <div class="sb-footer">
+    <p>Rockfort Adventure Holidays</p>
+    <p style="margin-top:0.2rem">📞 9385945156</p>
+  </div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1>📋 Enquiry Inbox</h1>
+      <p><span class="live-dot"></span><span id="sourceLabel">Loading...</span> &nbsp;|&nbsp; <span id="lastUpdated"></span></p>
+    </div>
+    <div class="topbar-right">
+      <button class="btn btn-ghost" onclick="loadEnquiries()">🔄 Refresh</button>
+      <button class="btn btn-teal" onclick="openAddModal()">➕ Add Enquiry</button>
+    </div>
+  </div>
+
+
+  <div class="stats-strip">
+    <div class="stat-box"><div class="stat-icon si-teal">📬</div><div><div class="stat-num" id="s-total">0</div><div class="stat-label">Total</div></div></div>
+    <div class="stat-box"><div class="stat-icon si-orange">🆕</div><div><div class="stat-num" id="s-new">0</div><div class="stat-label">New</div></div></div>
+    <div class="stat-box"><div class="stat-icon si-green">✅</div><div><div class="stat-num" id="s-booked">0</div><div class="stat-label">Booked</div></div></div>
+    <div class="stat-box"><div class="stat-icon si-blue">📞</div><div><div class="stat-num" id="s-contacted">0</div><div class="stat-label">Contacted</div></div></div>
+  </div>
+
+  <div class="filters">
+    <span class="filter-label">Filter:</span>
+    <button class="filter-pill active" onclick="setFilter('All',this)">All</button>
+    <button class="filter-pill" onclick="setFilter('New',this)">🆕 New</button>
+    <button class="filter-pill" onclick="setFilter('Contacted',this)">📞 Contacted</button>
+    <button class="filter-pill" onclick="setFilter('Booked',this)">✅ Booked</button>
+    <button class="filter-pill" onclick="setFilter('Closed',this)">🚫 Closed</button>
+    <div class="search-wrap">
+      🔍 <input type="text" id="searchInput" placeholder="Search name, phone, destination..." oninput="renderTable()">
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table-head-bar">
+      <h3>All Enquiries</h3>
+      <span id="rowCount" style="font-size:0.8rem;color:var(--muted)"></span>
+    </div>
+    <div id="tableContainer">
+      <div class="loading"><div class="spinner"></div>Loading enquiries...</div>
+    </div>
+  </div>
+</div>
+
+<!-- Detail Modal -->
+<div class="overlay" id="detailModal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title" id="modalTitle">Enquiry Details</div>
+      <button class="modal-close" onclick="closeModal('detailModal')">✕</button>
+    </div>
+    <div id="modalBody"></div>
+    <div style="margin-top:1.5rem;display:flex;gap:0.75rem;flex-wrap:wrap">
+      <button class="btn btn-teal" id="callBtn">📞 Call Now</button>
+      <button class="btn btn-ghost" id="deleteBtn">🗑️ Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Manual Modal -->
+<div class="overlay" id="addModal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title">➕ Add Enquiry Manually</div>
+      <button class="modal-close" onclick="closeModal('addModal')">✕</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+      <div style="display:flex;flex-direction:column;gap:0.4rem"><label style="font-size:0.8rem;font-weight:600">Name *</label><input id="a_name" style="padding:0.65rem;border:1px solid #e2e8f0;border-radius:8px;font-family:'DM Sans',sans-serif;outline:none" placeholder="Customer name"></div>
+      <div style="display:flex;flex-direction:column;gap:0.4rem"><label style="font-size:0.8rem;font-weight:600">Phone *</label><input id="a_phone" style="padding:0.65rem;border:1px solid #e2e8f0;border-radius:8px;font-family:'DM Sans',sans-serif;outline:none" placeholder="Phone number"></div>
+    </div>
+    <div style="margin-top:0.75rem;display:flex;flex-direction:column;gap:0.4rem"><label style="font-size:0.8rem;font-weight:600">Destination</label><input id="a_dest" style="padding:0.65rem;border:1px solid #e2e8f0;border-radius:8px;font-family:'DM Sans',sans-serif;outline:none;width:100%" placeholder="e.g. Ooty, Munnar..."></div>
+    <div style="margin-top:0.75rem;display:flex;flex-direction:column;gap:0.4rem"><label style="font-size:0.8rem;font-weight:600">Notes</label><textarea id="a_notes" rows="3" style="padding:0.65rem;border:1px solid #e2e8f0;border-radius:8px;font-family:'DM Sans',sans-serif;resize:vertical;width:100%;outline:none" placeholder="Any notes..."></textarea></div>
+    <button class="btn btn-teal" style="margin-top:1rem;width:100%" onclick="saveManual()">Save Enquiry</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let allData = [];
+  let currentFilter = 'All';
+
+  const COLORS = ['c0','c1','c2','c3','c4','c5','c6','c7'];
+  function getColor(name) {
+    let h = 0; for (let c of (name||'A')) h = (h*31+c.charCodeAt(0))&0xff;
+    return COLORS[h % COLORS.length];
+  }
+  function initials(name) {
+    return (name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  }
+
+  async function loadEnquiries() {
+    document.getElementById('tableContainer').innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+
+    if (isConfigured) {
+      try {
+        const res = await fetch(APPS_SCRIPT_URL + '?action=getAll');
+        const sheetsData = await res.json();
+        allData = sheetsData.map(e => ({ ...e, _source: 'sheets' }));
+        document.getElementById('sourceLabel').innerHTML = '🟢 Google Sheets — Live data (every device-ல தெரியும்)';
+        document.getElementById('setupCard').style.display = 'none';
+      } catch(e) {
+        allData = getLocalData();
+        document.getElementById('sourceLabel').innerHTML = '🟡 Offline — localStorage data';
+        document.getElementById('setupCard').style.display = 'block';
+      }
+    } else {
+      allData = getLocalData();
+      document.getElementById('sourceLabel').innerHTML = '🟡 localStorage மட்டும் (same browser)';
+      document.getElementById('setupCard').style.display = 'block';
+    }
+
+    document.getElementById('lastUpdated').textContent = 'Updated: ' + new Date().toLocaleTimeString('en-IN');
+    updateStats();
+    renderTable();
+    updateBadge();
+  }
+
+  function getLocalData() {
+    return JSON.parse(localStorage.getItem('rockfort_enquiries') || '[]')
+      .map(e => ({ ...e, _source: 'local' }));
+  }
+
+  function updateStats() {
+    document.getElementById('s-total').textContent = allData.length;
+    document.getElementById('s-new').textContent = allData.filter(e=>e.status==='New').length;
+    document.getElementById('s-booked').textContent = allData.filter(e=>e.status==='Booked').length;
+    document.getElementById('s-contacted').textContent = allData.filter(e=>e.status==='Contacted').length;
+  }
+  function updateBadge() {
+    const n = allData.filter(e=>e.status==='New').length;
+    const b = document.getElementById('newBadge');
+    b.textContent = n; b.style.display = n ? '' : 'none';
+  }
+
+  function setFilter(f, btn) {
+    currentFilter = f;
+    document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    renderTable();
+  }
+
+  function renderTable() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    let data = allData.filter(e => {
+      const mf = currentFilter==='All' || e.status===currentFilter;
+      const ms = !search || [e.name,e.phone,e.dest,e.service].some(v=>(v||'').toLowerCase().includes(search));
+      return mf && ms;
+    });
+    document.getElementById('rowCount').textContent = data.length + ' enquir' + (data.length===1?'y':'ies');
+
+    if (!data.length) {
+      document.getElementById('tableContainer').innerHTML = `
+        <div class="empty-state">
+          <span class="ei">📭</span>
+          <p style="font-weight:600">No enquiries found</p>
+          <p style="font-size:0.82rem;margin-top:0.3rem">Website form submit பண்ணியதும் இங்கே தெரியும்</p>
+        </div>`;
+      return;
+    }
+
+    document.getElementById('tableContainer').innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Customer</th><th>Phone</th><th>Destination</th><th>Service</th>
+            <th>Date</th><th>Received</th><th>Source</th><th>Status</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>${data.map((e,i) => `
+          <tr>
+            <td><div class="name-cell">
+              <div class="avatar ${getColor(e.name)}">${initials(e.name)}</div>
+              <div><div style="font-weight:600">${e.name}</div><div style="font-size:0.75rem;color:var(--muted)">${e.email||''}</div></div>
+            </div></td>
+            <td><a href="tel:${e.phone}" style="color:var(--teal);font-weight:600;text-decoration:none">${e.phone}</a></td>
+            <td>${e.dest||'—'}</td>
+            <td style="color:var(--muted);font-size:0.82rem">${e.service||'—'}</td>
+            <td style="font-size:0.82rem">${e.date||'—'}</td>
+            <td style="font-size:0.78rem;color:var(--muted)">${e.timestamp||'—'}</td>
+            <td>${e._source==='sheets'
+              ? '<span class="src-sheets">📊 Sheets</span>'
+              : '<span class="src-local">💾 Local</span>'}</td>
+            <td>
+              <select class="status-sel" onchange="updateStatus(${JSON.stringify(e.id||i)}, '${e._source}', ${e.id||i+2}, this.value)">
+                <option ${e.status==='New'?'selected':''}>New</option>
+                <option ${e.status==='Contacted'?'selected':''}>Contacted</option>
+                <option ${e.status==='Booked'?'selected':''}>Booked</option>
+                <option ${e.status==='Closed'?'selected':''}>Closed</option>
+              </select>
+            </td>
+            <td style="display:flex;gap:0.4rem">
+              <button class="btn-sm-view" onclick='viewDetail(${JSON.stringify(e)})'>👁 View</button>
+              <button class="btn-sm-danger" onclick="deleteEnquiry(${JSON.stringify(e.id||i)}, '${e._source}', ${e.id||i+2})">✕</button>
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`;
+  }
+
+  async function updateStatus(localId, source, sheetRow, status) {
+    // Update locally
+    allData = allData.map(e => e.id==localId ? {...e, status} : e);
+    if (source === 'local') {
+      const stored = JSON.parse(localStorage.getItem('rockfort_enquiries')||'[]')
+        .map(e => e.id==localId ? {...e, status} : e);
+      localStorage.setItem('rockfort_enquiries', JSON.stringify(stored));
+    } else if (isConfigured) {
+      try {
+        await fetch(`${APPS_SCRIPT_URL}?action=updateStatus&row=${sheetRow}&status=${encodeURIComponent(status)}`);
+      } catch(e) {}
+    }
+    updateStats(); updateBadge();
+    toast('✅ Status updated: ' + status);
+  }
+
+  async function deleteEnquiry(localId, source, sheetRow) {
+    if (!confirm('Delete this enquiry?')) return;
+    allData = allData.filter(e => e.id != localId);
+    if (source === 'local') {
+      const stored = JSON.parse(localStorage.getItem('rockfort_enquiries')||'[]')
+        .filter(e => e.id != localId);
+      localStorage.setItem('rockfort_enquiries', JSON.stringify(stored));
+    } else if (isConfigured) {
+      try {
+        await fetch(`${APPS_SCRIPT_URL}?action=delete&row=${sheetRow}`);
+      } catch(e) {}
+    }
+    updateStats(); updateBadge(); renderTable(); closeModal('detailModal');
+    toast('🗑️ Enquiry deleted');
+  }
+
+  function viewDetail(e) {
+    document.getElementById('modalTitle').textContent = '👤 ' + e.name;
+    document.getElementById('callBtn').onclick = () => window.location.href = 'tel:' + e.phone;
+    document.getElementById('deleteBtn').onclick = () => deleteEnquiry(e.id, e._source, e.id);
+    document.getElementById('modalBody').innerHTML = `
+      <div class="detail-row"><span class="dl">Name</span><span class="dv">${e.name}</span></div>
+      <div class="detail-row"><span class="dl">Phone</span><span class="dv"><a href="tel:${e.phone}" style="color:var(--teal);font-weight:600">${e.phone}</a></span></div>
+      <div class="detail-row"><span class="dl">Email</span><span class="dv">${e.email||'Not provided'}</span></div>
+      <div class="detail-row"><span class="dl">Destination</span><span class="dv">${e.dest||'—'}</span></div>
+      <div class="detail-row"><span class="dl">Service</span><span class="dv">${e.service||'—'}</span></div>
+      <div class="detail-row"><span class="dl">Travel Date</span><span class="dv">${e.date||'—'}</span></div>
+      <div class="detail-row"><span class="dl">Group Size</span><span class="dv">${e.group||'—'}</span></div>
+      <div class="detail-row"><span class="dl">Message</span><span class="dv">${e.msg||'No message'}</span></div>
+      <div class="detail-row"><span class="dl">Received</span><span class="dv">${e.timestamp||'—'}</span></div>
+      <div class="detail-row"><span class="dl">Status</span><span class="dv">${e.status}</span></div>
+      <div class="detail-row"><span class="dl">Source</span><span class="dv">${e._source==='sheets'?'📊 Google Sheets':'💾 Local Browser'}</span></div>`;
+    document.getElementById('detailModal').classList.add('open');
+  }
+
+  function openAddModal() { document.getElementById('addModal').classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+  async function saveManual() {
+    const name = document.getElementById('a_name').value.trim();
+    const phone = document.getElementById('a_phone').value.trim();
+    if (!name || !phone) { toast('⚠️ Name and phone required'); return; }
+    const entry = {
+      id: Date.now(), name, phone,
+      dest: document.getElementById('a_dest').value,
+      msg: document.getElementById('a_notes').value,
+      status: 'New', email:'', service:'', date:'', group:'',
+      timestamp: new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata'}),
+      _source: 'local'
+    };
+    // Save locally
+    const stored = JSON.parse(localStorage.getItem('rockfort_enquiries')||'[]');
+    stored.unshift(entry);
+    localStorage.setItem('rockfort_enquiries', JSON.stringify(stored));
+    // Also push to sheets
+    if (isConfigured) {
+      try { await fetch(APPS_SCRIPT_URL, { method:'POST', body:JSON.stringify(entry) }); } catch(e) {}
+    }
+    closeModal('addModal');
+    ['a_name','a_phone','a_dest','a_notes'].forEach(id => document.getElementById(id).value='');
+    await loadEnquiries();
+    toast('✅ Enquiry added!');
+  }
+
+  function exportCSV() {
+    if (!allData.length) { toast('No data to export'); return; }
+    const headers = ['Timestamp','Name','Phone','Email','Destination','Service','Travel Date','Group','Message','Status'];
+    const rows = allData.map(e => [e.timestamp,e.name,e.phone,e.email||'',e.dest||'',e.service||'',e.date||'',e.group||'',(e.msg||'').replace(/,/g,' '),e.status]);
+    const csv = [headers,...rows].map(r=>r.join(',')).join('\n');
+    const a = document.createElement('a');
+    a.href = 'data:text/csv,' + encodeURIComponent(csv);
+    a.download = 'rockfort_enquiries_' + new Date().toISOString().slice(0,10) + '.csv';
+    a.click();
+    toast('📁 CSV exported!');
+  }
+
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // Close modals on overlay click
+  ['detailModal','addModal'].forEach(id => {
+    document.getElementById(id).addEventListener('click', e => {
+      if (e.target === e.currentTarget) closeModal(id);
+    });
+  });
+
+  // Load on start, then auto-refresh every 30s
+  loadEnquiries();
+  setInterval(loadEnquiries, 30000);
+</script>
+</body>
+</html>
